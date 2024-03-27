@@ -17,8 +17,6 @@ if(WIN32)
 	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 endif(WIN32)
 
-link_directories(${CMAKE_SOURCE_DIR}/lib)
-
 # find the required packages
 find_package(GLM REQUIRED)
 message(STATUS "GLM included at ${GLM_INCLUDE_DIR}")
@@ -45,8 +43,9 @@ elseif(UNIX AND NOT APPLE)
   find_package(X11 REQUIRED)
   # note that the order is important for setting the libs
   # use pkg-config --libs $(pkg-config --print-requires --print-requires-private glfw3) in a terminal to confirm
-  set(LIBS ${GLFW3_LIBRARY} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread freetype ${ASSIMP_LIBRARY})
+  set(LIBS ${GLFW3_LIBRARY} X11 Xrandr Xinerama Xi Xxf86vm Xcursor GL dl pthread freetype IrrKlang ${ASSIMP_LIBRARY})
   set (CMAKE_CXX_LINK_EXECUTABLE "${CMAKE_CXX_LINK_EXECUTABLE} -ldl")
+  link_directories(${CMAKE_SOURCE_DIR}/lib/linux-gcc-64/)
 elseif(APPLE)
   INCLUDE_DIRECTORIES(/System/Library/Frameworks)
   FIND_LIBRARY(COCOA_LIBRARY Cocoa)
@@ -170,10 +169,11 @@ set(6.pbr
 set(7.in_practice
     1.debugging
     2.text_rendering
-    #3.2d_game
+    #3.2d_game/0.full_source
 )
 
 set(GUEST_ARTICLES
+    7.in_practice/3.2d_game/0.full_source
 	8.guest/2020/oit
 	8.guest/2020/skeletal_animation
 	8.guest/2021/1.scene/1.scene_graph
@@ -190,6 +190,7 @@ set(GUEST_ARTICLES
 
 configure_file(configuration/root_directory.h.in configuration/root_directory.h)
 include_directories(${CMAKE_BINARY_DIR}/configuration)
+link_directories(${CMAKE_BINARY_DIR}/lib/linux-gcc-64)
 
 # first create relevant static libraries required for other projects
 add_library(STB_IMAGE "src/stb_image.cpp")
@@ -278,3 +279,4 @@ foreach(GUEST_ARTICLE ${GUEST_ARTICLES})
 endforeach(GUEST_ARTICLE)
 
 include_directories(${CMAKE_SOURCE_DIR}/includes)
+#link_directories(${CMAKE_SOURCE_DIR}/lib/linux-gcc-64/)
